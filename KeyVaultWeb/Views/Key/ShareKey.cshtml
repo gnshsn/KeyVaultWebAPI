@@ -1,0 +1,26 @@
+﻿@model KeyVaultWeb.Models.UsernameViewModel
+
+    <div>
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title" id="myModalLabel">User List</h4>
+        </div>
+
+
+        <hr />
+        @using (Html.BeginForm("ShareKey", "Key", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.keyId)
+            <fieldset>
+                <dl>
+                    <dt>
+                        @Html.LabelFor(x => x.SelectedUser)
+                    </dt>
+                    <dd>
+                        @Html.DropDownListFor(x => x.SelectedUser, Model.allUsers, "--Select User")
+                    </dd>
+                </dl>
+            </fieldset>
+            <input type="submit" value="Share" />
+        }
+    </div>

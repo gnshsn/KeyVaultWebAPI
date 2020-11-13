@@ -1,0 +1,34 @@
+﻿@model KeyVaultWeb.Models.KeyViewModel
+
+@{
+    ViewData["Title"] = "DeleteKey";
+}
+
+<h1>DeleteKey</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>PersonalDetail</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Username)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Password)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ExpirationDate)
+        </dt>
+    </dl>
+
+    @using (Html.BeginForm("Delete", "Key", new { Id = Model.Id }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" />
+            |
+            @Html.ActionLink("Back to List", "Keys")
+        </div>
+    }
+</div>

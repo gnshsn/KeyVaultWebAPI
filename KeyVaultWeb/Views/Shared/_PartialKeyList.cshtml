@@ -1,0 +1,71 @@
+﻿@model IEnumerable<KeyVaultWeb.Models.KeyViewModel>
+<div>
+    <label for="filter"> You can filter by</label>
+    <div float="left"><input type="radio" id="1" name="filter">Username</div>
+    <div float="left"><input type="radio" id="2" name="filter">Expiration Date</div>
+    <div float="left"><input type="radio" id="3" name="filter">Create Date</div>
+
+
+</div>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Username)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Password)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExpirationDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreateDate)
+        </th>
+        <th></th>
+    </tr>
+
+
+    @if (Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <input type="text" id="Username" value="@item.Username" onclick="copyClick()" readonly>
+                    @*@Html.DisplayFor(modelItem => item.Username)*@
+                </td>
+                <td>
+                    <input type="password" id="password" value="@item.Password" onclick="copyClick()" readonly>
+                    @*@Html.DisplayFor(modelItem => item.Password)*@
+                </td>
+                <td>
+                    @if ((item.ExpirationDate - DateTime.Now).TotalDays <= 0)
+                    {
+                        <input type="text" id="ExpirationDate" value="@item.ExpirationDate" style="color:#FF0000" readonly>
+                    }
+                    else
+                    {
+                        <input type="text" id="ExpirationDate" value="@item.ExpirationDate" readonly>
+                    }
+
+                    @*@Html.DisplayFor(modelItem => item.ExpirationDate)*@
+                </td>
+                <td>
+                    <input type="text" id="CreateDate" value="@item.CreateDate" readonly>
+                    @*@Html.DisplayFor(modelItem => item.CreateDate)*@
+                </td>
+                <td>
+                    @Html.ActionLink("Edit/Details", "GetKey", "Key", new { id = item.Id }) |
+                    @*@Html.ActionLink("Share", "ShareKey", "Key", new { id = item.Id })*@
+                    <a href="javascript:void(0);" id="share" data-id="@item.Id">Share</a> |
+                    @Html.ActionLink("Delete", "DeleteKey", "Key", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    }
+    <tr>
+        <td>
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        </td>
+    </tr>
+</table>

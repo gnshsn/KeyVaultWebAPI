@@ -1,0 +1,116 @@
+﻿@model Tuple<IEnumerable<KeyVaultWeb.Models.KeyViewModel>, KeyVaultWeb.Models.UserLogViewModel>
+
+@{
+    ViewBag.Title = "Keys";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Keys</h2>
+
+<div>
+    <p>@Html.ActionLink("Create New", "Create")</p>
+</div>
+
+<div id="addFilter">
+    @await Html.PartialAsync("~/Views/Shared/_PartialKeyList.cshtml", Model.Item1)
+</div>
+<div>
+    <label for="LastLogin"> Last Login ---> @Model.Item2.LoginTime</label>
+</div>
+<div>
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+</div>
+
+
+<div id='myModal' class='modal'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script>
+
+        var TeamDetailPostBackURL = '/Key/ShareKey';
+        $(document).ready(function () {
+            $("#share").click(function () {
+                debugger;
+                var $buttonClicked = $(this);
+                var id = $buttonClicked.attr('data-id');
+                var options = { "backdrop": "static", keyboard: true };
+                $.ajax({
+                    type: "GET",
+                    url: TeamDetailPostBackURL,
+                    contentType: "application/json; charset=utf-8",
+                    data: { "Id": id },
+                    datatype: "json",
+                    success: function (data) {
+                        debugger;
+                        $('#myModalContent').html(data);
+                        $('#myModal').modal(options);
+                        $('#myModal').modal('show');
+
+                    },
+                    error: function () {
+                        alert("Dynamic content load failed.");
+                    }
+                });
+            });
+            //$("#closebtn").on('click',function(){
+            //    $('#myModal').modal('hide');
+
+            $("#closbtn").click(function () {
+                $('#myModal').modal('hide');
+            });
+        });
+        function copyClick() {
+            /* Get the text field */
+            var copyText = document.getElementById("password");
+
+            /* Select the text field */
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+            /* Copy the text inside the text field */
+            document.execCommand("copy");
+
+            /* Alert the copied text */
+            alert("text Coppied");
+        }
+        $('input:radio[name="filter"]').change(
+            function () {
+                var filter = null;
+                var srcstrng = null;
+                var r =  '@Html.Raw(Json.Serialize(@Model.Item1))';
+                var url = '/Key/Filter';
+                if ($('#1').is(':checked')) {
+                    // append goes here
+                    filter = 'username';
+                } else if ($('#2').is(':checked')){
+                    filter = 'expdate';
+                }
+                else if ($('#3').is(':checked')) {
+                    filter = 'crtdate';
+                }
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    contentType: "application/json; charset=utf-8",
+                    data: { "filter": filter, "searchString": srcstrng ,"model":r },
+                    datatype: "json",
+                    success: function (data) {
+                        $("#addFilter").html(data);
+                    },
+                    error: function () {
+                        alert("Filtering failed.");
+                    }
+                });
+            });
+
+    </script>
+
+}
